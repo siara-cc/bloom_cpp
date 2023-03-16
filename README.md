@@ -1,5 +1,7 @@
 # Bloom filter implemention in C++
 
+[![C/C++ CI](https://github.com/siara-cc/bloom_cpp/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/siara-cc/bloom_cpp/actions/workflows/c-cpp.yml)
+
 This project is C++ version of the excellent bloom implementation in `C` by Tyler Barrus at https://github.com/barrust/bloom
 
 For understanding about `Bloom Filters` and further information, please visit above repo.  This library only implements the `C` library as it is, to simplify usage.
