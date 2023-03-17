@@ -15,6 +15,7 @@ Clone this repo and run `make`.  Then execute `tests/bloom_test` to run tests.
 Include `bloom.hpp` in your source code and call functions as shown below.  No other file is needed to use this library.
 
 ```c++
+#include <iostream>
 #include "bloom.hpp"
 
 int main() {
@@ -22,14 +23,14 @@ int main() {
     bloom_filter bf(10, 0.05);
     bf.add_string("test");
     if (bf.check_string("test") == BLOOM_FAILURE) {
-        printf("'test' is not in the Bloom Filter\n");
+        std::cout << "'test' is not in the Bloom Filter" << std::endl;
     } else {
-        printf("'test' is in the Bloom Filter\n");
+        std::cout << "'test' is in the Bloom Filter" << std::endl;
     }
     if (bf.check_string("blah") == BLOOM_FAILURE) {
-        printf("'blah' is not in the Bloom Filter!\n");
+        std::cout << "'blah' is not in the Bloom Filter!" << std::endl;
     } else {
-        printf("'blah' is in th Bloom Filter\n");
+        std::cout << "'blah' is in th Bloom Filter" << std::endl;
     }
     bf.stats();
     return 0;
