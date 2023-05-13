@@ -114,9 +114,9 @@ class bloom_filter {
         int offset = sizeof(uint64_t) * 2 + sizeof(float);
         fseek(fp, offset * -1, SEEK_END);
 
-        fread(&estimated_elements, sizeof(uint64_t), 1, fp);
-        fread(&elements_added, sizeof(uint64_t), 1, fp);
-        fread(&false_positive_probability, sizeof(float), 1, fp);
+        size_t bytes_read = fread(&estimated_elements, sizeof(uint64_t), 1, fp);
+        bytes_read = fread(&elements_added, sizeof(uint64_t), 1, fp);
+        bytes_read = fread(&false_positive_probability, sizeof(float), 1, fp);
         __calculate_optimal_hashes();
         rewind(fp);
         if(on_disk == 0) {
