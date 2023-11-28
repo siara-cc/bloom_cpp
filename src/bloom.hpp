@@ -329,6 +329,17 @@ class bloom_filter {
         return res;
     }
 
+    /* Check to see if a uint8_t string (or element) is or is not in the bloom filter */
+    int check_uint8_str_given_hashes(const uint8_t *str, const size_t str_len, uint64_t *hashes) {
+        return check_string_alt(hashes, number_hashes);;
+    }
+
+    /*  Generate the desired number of hashes for the provided string
+        NOTE: It is up to the caller to free the allocated memory */
+    uint64_t* calculate_hashes(const uint8_t *str, const size_t str_len) {
+        return hash_function(number_hashes, str, str_len);
+    }
+
     /*  Generate the desired number of hashes for the provided string
         NOTE: It is up to the caller to free the allocated memory */
     uint64_t* calculate_hashes(const uint8_t *str, const size_t str_len, unsigned int _number_hashes) {
