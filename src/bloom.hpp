@@ -45,7 +45,7 @@
 #define BLOOM_SUCCESS 0
 #define BLOOM_FAILURE -1
 
-typedef uint64_t* (*BloomHashFunction) (int num_hashes, const uint8_t *str, const size_t str_len);
+typedef uint64_t* (*BloomHashFunction) (int num_hashes, const uint8_t *str, const size_t str_len, uint64_t *results);
 
 class bloom_filter {
 
@@ -169,8 +169,9 @@ class bloom_filter {
     }
 
     /* NOTE: The caller will free the results */
-    static uint64_t* __default_hash(int num_hashes, const uint8_t *str, const size_t str_len) {
-        uint64_t *results = (uint64_t*)calloc(num_hashes, sizeof(uint64_t));
+    static uint64_t* __default_hash(int num_hashes, const uint8_t *str, const size_t str_len, uint64_t *results) {
+        if (results == NULL)
+	    results = (uint64_t*)calloc(num_hashes, sizeof(uint64_t));
         int i;
         for (i = 0; i < num_hashes; ++i) {
             results[i] = __fnv_1a(str, str_len, i);
@@ -309,10 +310,13 @@ class bloom_filter {
     }
 
     /* Add a uint8_t string (or element) to the bloom filter */
-    int add_uint8_str(const uint8_t *str, const size_t str_len) {
-        uint64_t *hashes = calculate_hashes(str, str_len, number_hashes);
+    int add_uint8_str(const uint8_t *str, const size_t str_len, uint64_t *hashes = NULL) {
+    	bool hashes_given = (hashes != NULL);
+    	if (!hashes_given)
+	    hashes = calculate_hashes(str, str_len, number_hashes);
         int res = add_string_alt(hashes, number_hashes);
-        free(hashes);
+        if (!hashes_given)
+            free(hashes);
         return res;
     }
 
@@ -337,13 +341,19 @@ class bloom_filter {
     /*  Generate the desired number of hashes for the provided string
         NOTE: It is up to the caller to free the allocated memory */
     uint64_t* calculate_hashes(const uint8_t *str, const size_t str_len) {
-        return hash_function(number_hashes, str, str_len);
+        return hash_function(number_hashes, str, str_len, NULL);
+    }
+
+    /*  Generate the desired number of hashes for the provided string
+        NOTE: It is up to the caller to free the allocated memory */
+    uint64_t* calculate_hashes_given_buf(const uint8_t *str, const size_t str_len, uint64_t *buf) {
+        return hash_function(number_hashes, str, str_len, buf);
     }
 
     /*  Generate the desired number of hashes for the provided string
         NOTE: It is up to the caller to free the allocated memory */
     uint64_t* calculate_hashes(const uint8_t *str, const size_t str_len, unsigned int _number_hashes) {
-        return hash_function(_number_hashes, str, str_len);
+        return hash_function(_number_hashes, str, str_len, NULL);
     }
 
     /* Add a string to a bloom filter using the defined hashes */
