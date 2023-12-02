@@ -334,7 +334,7 @@ class bloom_filter {
     }
 
     /* Check to see if a uint8_t string (or element) is or is not in the bloom filter */
-    int check_uint8_str_given_hashes(const uint8_t *str, const size_t str_len, uint64_t *hashes) {
+    int check_if_exists(uint64_t *hashes) {
         return check_string_alt(hashes, number_hashes);;
     }
 
