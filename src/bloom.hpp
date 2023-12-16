@@ -231,6 +231,7 @@ class bloom_filter {
         false_positive_probability = _false_positive_rate;
         __calculate_optimal_hashes();
         bloom = (unsigned char*)calloc(bloom_length + 1, sizeof(char)); // pad to ensure no running off the end
+        madvise(bloom, bloom_length, MADV_WILLNEED);
         elements_added = 0;
         set_hash_function(_hash_function);
         __is_on_disk = 0; // not on disk
@@ -431,6 +432,7 @@ class bloom_filter {
         }
         __read_from_file(fp, 0, NULL);
         fclose(fp);
+        madvise(bloom, bloom_length, MADV_WILLNEED);
         set_hash_function(_hash_function);
         __is_on_disk = 0; // not on disk
         return BLOOM_SUCCESS;
@@ -546,6 +548,7 @@ class bloom_filter {
 
     int destroy() {
         if (__is_on_disk == 0) {
+            madvise(bloom, bloom_length, MADV_NORMAL);
             free(bloom);
         } else {
             fclose(filepointer);
